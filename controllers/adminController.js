@@ -21,7 +21,7 @@ const adminController = {
       name: req.body.name,
       tel: req.body.tel,
       address: req.body.address,
-      open_hours: req.body.open_hours,
+      opening_hours: req.body.opening_hours,
       description: req.body.description
     })
     .then((restaurant) => {
@@ -29,6 +29,14 @@ const adminController = {
       res.redirect('/admin/restaurants')
     })
     .catch(e => console.log(e))
+  },
+
+  getRestaurant: (req, res) => {
+    return Restaurant.findByPk(req.params.id, {raw: true}).then(restaurant => {
+      return res.render('admin/restaurant', {
+        restaurant: restaurant
+      })
+    })
   }
 }
 module.exports = adminController
