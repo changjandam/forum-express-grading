@@ -11,6 +11,8 @@ const port = 3000
 app.engine('hbs', handlebars({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+app.use('/upload', express.static(__dirname+'/upload'))
+
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session({secret: 'secret', resave: false, saveUninitialized: false}))
