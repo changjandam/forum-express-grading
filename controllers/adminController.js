@@ -3,8 +3,8 @@ const Restaurant = db.Restaurant
 
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({raw: true}).then(restaurants => {
-      return res.render('admin/restaurants', {restaurants: restaurants})
+    return Restaurant.findAll({ raw: true }).then(restaurants => {
+      return res.render('admin/restaurants', { restaurants: restaurants })
     })
   },
 
@@ -13,7 +13,7 @@ const adminController = {
   },
 
   postRestaurant: (req, res) => {
-    if(!req.body.name) {
+    if (!req.body.name) {
       req.flash('error_msg', "name didn't exist")
       return res.redirect('back')
     }
@@ -24,19 +24,47 @@ const adminController = {
       opening_hours: req.body.opening_hours,
       description: req.body.description
     })
-    .then((restaurant) => {
-      req.flash('success_msg', 'restaurant was successfully created')
-      res.redirect('/admin/restaurants')
-    })
-    .catch(e => console.log(e))
+      .then((restaurant) => {
+        req.flash('success_msg', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(e => console.log(e))
   },
 
   getRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id, {raw: true}).then(restaurant => {
+    return Restaurant.findByPk(req.params.id, { raw: true }).then(restaurant => {
       return res.render('admin/restaurant', {
         restaurant: restaurant
       })
     })
+  },
+
+  editRestaurant: (req, res) => {
+    return Restaurant.findByPk(req.params.id, { raw: true }).then(restaurant => {
+      return res.render('admin/create', { restaurant: restaurant })
+    })
+  },
+
+  putRestaurant: (req, res) => {
+    if (!req.body.name) {
+      req.flash('error_msg', "name didn't exist")
+      return res.redirect('back')
+    }
+
+    return Restaurant.findByPk(req.params.id)
+      .then((restaurant) => {
+        restaurant.update({
+          name: req.body.name,
+          tel: req.body.tel,
+          address: req.body.address,
+          opening_hours: req.body.opening_hours,
+          description: req.body.description
+        })
+          .then((restaurant) => {
+            req.flash('success_msg', 'restaurant was successfully update')
+            res.redirect('/admin/restaurants')
+          })
+      })
   }
 }
 module.exports = adminController
