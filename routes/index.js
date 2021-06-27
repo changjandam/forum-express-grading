@@ -4,9 +4,11 @@ const restController = require('../controllers/restController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
 const categoryController = require('../controllers/categoryController')
+const commentController = require('../controllers/commentController')
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 const app = require('../app')
+const { authenticate } = require('passport')
 module.exports = (app, passport) => {
   const authenticated = (req, res, next) => {
     if (helpers.ensureAuthenticated(req)) {
@@ -48,6 +50,8 @@ module.exports = (app, passport) => {
   app.get('/admin/categories/:id', authenticatedAdmin, categoryController.getCategories)
   app.put('/admin/categories/:id', authenticatedAdmin, categoryController.putCategory)
   app.delete('/admin/categories/:id', authenticatedAdmin, categoryController.deleteCategory)
+
+  app.post('/comments', authenticated, commentController.postComment)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
