@@ -13,7 +13,11 @@ if(process.env.NODE_ENV !== 'production'){
   require('dotenv').config
 }
 
-app.engine('hbs', handlebars({ defaultLayout: 'main', extname: '.hbs' }))
+app.engine('hbs', handlebars({ 
+  defaultLayout: 'main', 
+  extname: '.hbs',
+  helpers: require('./config/handlebars-helpers')
+}))
 app.set('view engine', 'hbs')
 
 app.use('/upload', express.static(__dirname+'/upload'))
