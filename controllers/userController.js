@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
   signUpPage: (req, res) => {
@@ -49,13 +51,15 @@ const userController = {
   //TODO:
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      console.log(user.toJSON())
       return res.render('profile', { user: user.toJSON() })
     })
   },
 
   editUser: (req, res) => {
-
+    return User.findByPk(req.params.id).then(user => {
+      console.log(user.toJSON())
+      return res.render('editProfile', { user: user.toJSON() })
+    })
   },
 
   putUser: (req, res) => {
