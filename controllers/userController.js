@@ -3,6 +3,8 @@ const db = require('../models')
 const User = db.User
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const Comment = db.Comment
+const Restaurant = db.Restaurant
 
 const userController = {
   signUpPage: (req, res) => {
@@ -48,10 +50,26 @@ const userController = {
     res.redirect('signin')
   },
 
-  //TODO:
+  //TODO: 
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      return res.render('profile', { user: user.toJSON() })
+      Comment.findAll({
+        raw: true,
+        nest: true,
+        where: {
+          UserId: user.id
+        }
+      }).then(comments => {
+        comments.forEach(comment => {
+          Restaurant.findByPk(comment.RestaurantId).then(restaurant => {
+            comment.restaurantImage = restaurant.image
+          })
+            .then(() => {
+              console.log(comments)
+              return res.render('profile', { user: user.toJSON(), comments })
+            })
+        })
+      })
     })
   },
 
@@ -69,15 +87,15 @@ const userController = {
     const { file } = req
     if (!file) {
       return User.findByPk(req.params.id)
-      .then(user => {
-        user.update({
-          name: req.body.name
+        .then(user => {
+          user.update({
+            name: req.body.name
+          })
         })
-      })
-      .then(() => {
-        req.flash('success_msg', 'Profile was updated successfully.')
-        res.redirect(`/users/${req.body.id}`)
-      })      
+        .then(() => {
+          req.flash('success_msg', 'Profile was updated successfully.')
+          res.redirect(`/users/${req.body.id}`)
+        })
     }
 
     imgur.setClientID(IMGUR_CLIENT_ID);
