@@ -60,14 +60,17 @@ const userController = {
           UserId: user.id
         }
       }).then(comments => {
-        comments.forEach(comment => {
-          Restaurant.findByPk(comment.RestaurantId).then(restaurant => {
-            comment.restaurantImage = restaurant.image
+        Promise.all(
+          comments.map(comment => {
+            return Restaurant.findByPk(comment.RestaurantId)
+              .then(restaurant => {
+                comment.restaurantName = restaurant.name
+                comment.restaurantImage = restaurant.image
+              })
           })
-            .then(() => {
-              console.log(comments)
-              return res.render('profile', { user: user.toJSON(), comments })
-            })
+        ).then(() => {
+          const length = comments.length
+          return res.render('profile', { user: user.toJSON(), comments, length })
         })
       })
     })
