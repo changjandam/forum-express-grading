@@ -6,7 +6,8 @@ for (let i = 0; i < 10; i++) {
   comments.push({
     text: `test${i}`,
     UserId: 1,
-    RestaurantId: Math.floor(Math.random() * 50) * 10 + 1,
+    RestaurantId: 1,
+    // Math.floor(Math.random() * 50) * 10 + 1,
     createdAt: new Date(),
     updatedAt: new Date()
   })
