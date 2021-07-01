@@ -88,17 +88,16 @@ const restController = {
   },
 
   getDashBoard: (req, res) => {
-    const views = 10
     Restaurant.findByPk(req.params.id, { include: [Category] })
       .then(restaurant => {
+        restaurant.viewCounts += 1
+        restaurant.save()
         Comment.findAndCountAll({
           raw: true,
           nest: true,
           where: { RestaurantId: restaurant.id }
         }).then(comments => {
-          console.log(restaurant)
-          console.log(comments)
-          return res.render('dashBoard', { restaurant:restaurant.toJSON(), views, comments })
+          return res.render('dashBoard', { restaurant: restaurant.toJSON(), views: (restaurant.viewCounts + 1), comments })
         })
       })
   }
