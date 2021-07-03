@@ -13,6 +13,8 @@ if(process.env.NODE_ENV !== 'production'){
   require('dotenv').config()
 }
 
+app.use(express.static('public'))
+
 app.engine('hbs', handlebars({ 
   defaultLayout: 'main', 
   extname: '.hbs',
